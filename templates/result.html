@@ -1,212 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Result  AI Career Prediction System</title>
+  <title>Your Result AI Career Prediction System</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
+
 <body class="result-body">
 
-<!-- Animated Background -->
-<div class="bg-canvas">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
-
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="nav-brand">
-    <span class="nav-icon">🧠</span>
-    <span class="nav-title">CareerAI</span>
+  <!-- Animated Background -->
+  <div class="bg-canvas">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
   </div>
-  <div class="nav-badge">Powered by Random Forest ML</div>
-</nav>
 
-<!-- ═══════════════════════ RESULT HERO ══════════════════════════════ -->
-<section class="result-hero">
-  <div class="result-hero-content animate-fade-in">
-    <div class="result-label">🎯 Your Career Stream</div>
-    <h1 class="result-title">
-      {{ result.info.emoji }}
-      <span class="result-career-name">{{ result.career }}</span>
-    </h1>
-    <p class="result-tagline">{{ result.info.tagline }}</p>
-
-    <!-- Confidence Badge -->
-    {% if result.confidence %}
-    <div class="confidence-badge">
-      <div class="confidence-ring">
-        <svg viewBox="0 0 100 100" class="confidence-svg">
-          <circle cx="50" cy="50" r="40" class="conf-track"/>
-          <circle cx="50" cy="50" r="40" class="conf-fill"
-            stroke-dasharray="{{ (result.confidence / 100 * 251.2) | round(1) }} 251.2"
-            style="stroke: {{ result.info.color }}" />
-        </svg>
-        <span class="conf-value">{{ result.confidence | round(1) }}%</span>
-      </div>
-      <div class="conf-label">AI Confidence</div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-icon">🎓</span>
+      <span class="nav-title">CareerAI</span>
     </div>
-    {% endif %}
-  </div>
-</section>
+    <div class="nav-badge">Powered by Random Forest ML</div>
+  </nav>
 
-<!-- ═══════════════════════ PROBABILITY BARS ═════════════════════════ -->
-<section class="section-wrap">
-  <div class="glass-card animate-slide-up">
-    <h3 class="card-heading">📊 Career Stream Match Analysis</h3>
-    <div class="prob-bars">
-      {% for label, pct in result.probabilities.items() %}
-      <div class="prob-row">
-        <div class="prob-label">
-          {% if label == 'Science' %}🔬{% elif label == 'Commerce' %}📈{% else %}🎭{% endif %}
-          {{ label }}
+  <!-- ═══════════════════════ RESULT HERO ══════════════════════════════ -->
+  <section class="result-hero">
+    <div class="result-hero-content animate-fade-in">
+      <div class="result-label">🎯 Your Career Stream</div>
+      <h1 class="result-title">
+        {{ result.info.emoji }}
+        <span class="result-career-name">{{ result.career }}</span>
+      </h1>
+      <p class="result-tagline">{{ result.info.tagline }}</p>
+
+      <!-- Confidence Badge -->
+      {% if result.confidence %}
+      <div class="confidence-badge">
+        <div class="confidence-ring">
+          <svg viewBox="0 0 100 100" class="confidence-svg">
+            <circle cx="50" cy="50" r="40" class="conf-track" />
+            <circle cx="50" cy="50" r="40" class="conf-fill"
+              stroke-dasharray="{{ (result.confidence / 100 * 251.2) | round(1) }} 251.2"
+              style="stroke: {{ result.info.color }}" />
+          </svg>
+          <span class="conf-value">{{ result.confidence | round(1) }}%</span>
         </div>
-        <div class="prob-track">
-          <div class="prob-fill {% if label == result.career %}prob-winner{% endif %}"
-               style="width: {{ pct }}%;
-                      background: {% if label == 'Science' %}#4f8ef7{% elif label == 'Commerce' %}#f7c94f{% else %}#a64ff7{% endif %}">
+        <div class="conf-label">AI Confidence</div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ PROBABILITY BARS ═════════════════════════ -->
+  <section class="section-wrap">
+    <div class="glass-card animate-slide-up">
+      <h3 class="card-heading">📊 Career Stream Match Analysis</h3>
+      <div class="prob-bars">
+        {% for label, pct in result.probabilities.items() %}
+        <div class="prob-row">
+          <div class="prob-label">
+            {% if label == 'Science' %}🔬{% elif label == 'Commerce' %}📈{% else %}🎭{% endif %}
+            {{ label }}
           </div>
+          <div class="prob-track">
+            <div class="prob-fill {% if label == result.career %}prob-winner{% endif %}"
+              style="width: {{ pct }}%;
+                      background: {% if label == 'Science' %}#4f8ef7{% elif label == 'Commerce' %}#f7c94f{% else %}#a64ff7{% endif %}">
+            </div>
+          </div>
+          <div class="prob-pct">{{ pct }}%</div>
         </div>
-        <div class="prob-pct">{{ pct }}%</div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Score Breakdown -->
-    <div class="score-grid">
-      <div class="score-item sci">
-        <div class="score-num">{{ result.scores.Science }}</div>
-        <div class="score-lbl">Science Score</div>
-      </div>
-      <div class="score-item com">
-        <div class="score-num">{{ result.scores.Commerce }}</div>
-        <div class="score-lbl">Commerce Score</div>
-      </div>
-      <div class="score-item hum">
-        <div class="score-num">{{ result.scores.Humanities }}</div>
-        <div class="score-lbl">Humanities Score</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ CAREER DESCRIPTION ═══════════════════════ -->
-<section class="section-wrap">
-  <div class="glass-card animate-slide-up">
-    <h3 class="card-heading">💡 About Your Career Path</h3>
-    <p class="card-text">{{ result.info.description }}</p>
-  </div>
-</section>
-
-<!-- ═══════════════════════ 4-COLUMN INFO GRID ═══════════════════════ -->
-<section class="section-wrap">
-  <div class="info-grid">
-
-    <!-- Strengths -->
-    <div class="glass-card info-card animate-slide-up">
-      <div class="info-icon">💪</div>
-      <h4 class="info-heading">Your Strengths</h4>
-      <ul class="info-list">
-        {% for s in result.info.strengths %}
-        <li>{{ s }}</li>
         {% endfor %}
-      </ul>
-    </div>
+      </div>
 
-    <!-- Skills -->
-    <div class="glass-card info-card animate-slide-up delay-1">
-      <div class="info-icon">🛠️</div>
-      <h4 class="info-heading">Recommended Skills</h4>
-      <ul class="info-list">
-        {% for s in result.info.skills %}
-        <li>{{ s }}</li>
+      <!-- Score Breakdown -->
+      <div class="score-grid">
+        <div class="score-item sci">
+          <div class="score-num">{{ result.scores.Science }}</div>
+          <div class="score-lbl">Science Score</div>
+        </div>
+        <div class="score-item com">
+          <div class="score-num">{{ result.scores.Commerce }}</div>
+          <div class="score-lbl">Commerce Score</div>
+        </div>
+        <div class="score-item hum">
+          <div class="score-num">{{ result.scores.Humanities }}</div>
+          <div class="score-lbl">Humanities Score</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ CAREER DESCRIPTION ═══════════════════════ -->
+  <section class="section-wrap">
+    <div class="glass-card animate-slide-up">
+      <h3 class="card-heading">💡 About Your Career Path</h3>
+      <p class="card-text">{{ result.info.description }}</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ 4-COLUMN INFO GRID ═══════════════════════ -->
+  <section class="section-wrap">
+    <div class="info-grid">
+
+      <!-- Strengths -->
+      <div class="glass-card info-card animate-slide-up">
+        <div class="info-icon">💪</div>
+        <h4 class="info-heading">Your Strengths</h4>
+        <ul class="info-list">
+          {% for s in result.info.strengths %}
+          <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Skills -->
+      <div class="glass-card info-card animate-slide-up delay-1">
+        <div class="info-icon">🛠️</div>
+        <h4 class="info-heading">Recommended Skills</h4>
+        <ul class="info-list">
+          {% for s in result.info.skills %}
+          <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Subjects -->
+      <div class="glass-card info-card animate-slide-up delay-2">
+        <div class="info-icon">📚</div>
+        <h4 class="info-heading">University Subjects</h4>
+        <ul class="info-list">
+          {% for s in result.info.subjects %}
+          <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Careers -->
+      <div class="glass-card info-card animate-slide-up delay-3">
+        <div class="info-icon">💼</div>
+        <h4 class="info-heading">Job Opportunities</h4>
+        <ul class="info-list">
+          {% for s in result.info.careers %}
+          <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ GROWTH AREAS ════════════════════════════ -->
+  <section class="section-wrap">
+    <div class="glass-card animate-slide-up">
+      <h3 class="card-heading">🚀 Future Growth Areas</h3>
+      <div class="growth-chips">
+        {% for g in result.info.growth %}
+        <div class="growth-chip">{{ g }}</div>
         {% endfor %}
-      </ul>
+      </div>
     </div>
+  </section>
 
-    <!-- Subjects -->
-    <div class="glass-card info-card animate-slide-up delay-2">
-      <div class="info-icon">📚</div>
-      <h4 class="info-heading">University Subjects</h4>
-      <ul class="info-list">
-        {% for s in result.info.subjects %}
-        <li>{{ s }}</li>
-        {% endfor %}
-      </ul>
+  <!-- ═══════════════════════ MOTIVATIONAL QUOTE ══════════════════════ -->
+  <section class="section-wrap">
+    <div class="quote-card animate-fade-in">
+      <div class="quote-icon">❝</div>
+      <p class="quote-text">{{ result.info.quote }}</p>
     </div>
+  </section>
 
-    <!-- Careers -->
-    <div class="glass-card info-card animate-slide-up delay-3">
-      <div class="info-icon">🎯</div>
-      <h4 class="info-heading">Job Opportunities</h4>
-      <ul class="info-list">
-        {% for s in result.info.careers %}
-        <li>{{ s }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+  <!-- ═══════════════════════ ACTION BUTTONS ══════════════════════════ -->
+  <section class="section-wrap actions-section">
+    <a href="/" class="btn-secondary btn-large">🔄 Predict Again</a>
+    <button class="btn-primary btn-large" onclick="downloadPDF()">
+      📥 Download PDF
+    </button>
+    <button class="btn-outline btn-large" onclick="window.print()">
+      🖨️ Print Result
+    </button>
+  </section>
 
-  </div>
-</section>
-
-<!-- ═══════════════════════ GROWTH AREAS ════════════════════════════ -->
-<section class="section-wrap">
-  <div class="glass-card animate-slide-up">
-    <h3 class="card-heading">🚀 Future Growth Areas</h3>
-    <div class="growth-chips">
-      {% for g in result.info.growth %}
-      <div class="growth-chip">{{ g }}</div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ MOTIVATIONAL QUOTE ══════════════════════ -->
-<section class="section-wrap">
-  <div class="quote-card animate-fade-in">
-    <div class="quote-icon">❝</div>
-    <p class="quote-text">{{ result.info.quote }}</p>
-  </div>
-</section>
-
-<!-- ═══════════════════════ ACTION BUTTONS ══════════════════════════ -->
-<section class="section-wrap actions-section">
-  <a href="/" class="btn-secondary btn-large">🔄 Predict Again</a>
-  <button class="btn-primary btn-large" onclick="downloadPDF()">
-    📥 Download PDF
-  </button>
-  <button class="btn-outline btn-large" onclick="window.print()">
-    🖨️ Print Result
-  </button>
-</section>
-
-<!-- Hidden data for JS PDF generation -->
-<script>
-const RESULT_DATA = {
-  career: "{{ result.career }}",
-  confidence: "{{ result.confidence | round(1) if result.confidence else 'N/A' }}",
-  tagline: {{ result.info.tagline | tojson }},
-  description: {{ result.info.description | tojson }},
-  scores: {
-    Science: {{ result.scores.Science }},
-    Commerce: {{ result.scores.Commerce }},
-    Humanities: {{ result.scores.Humanities }}
-  },
-  strengths: {{ result.info.strengths | tojson }},
-  skills: {{ result.info.skills | tojson }},
-  subjects: {{ result.info.subjects | tojson }},
-  careers: {{ result.info.careers | tojson }},
-  growth: {{ result.info.growth | tojson }},
-  quote: {{ result.info.quote | tojson }},
-  timestamp: "{{ timestamp }}",
-  answers: {{ answers | tojson }}
+  <!-- Hidden data for JS PDF generation -->
+  <script>
+    const RESULT_DATA = {
+      career: "{{ result.career }}",
+      confidence: "{{ result.confidence | round(1) if result.confidence else 'N/A' }}",
+      tagline: {{ result.info.tagline | tojson }},
+    description: { { result.info.description | tojson } },
+    scores: {
+      Science: { { result.scores.Science } },
+      Commerce: { { result.scores.Commerce } },
+      Humanities: { { result.scores.Humanities } }
+    },
+    strengths: { { result.info.strengths | tojson } },
+    skills: { { result.info.skills | tojson } },
+    subjects: { { result.info.subjects | tojson } },
+    careers: { { result.info.careers | tojson } },
+    growth: { { result.info.growth | tojson } },
+    quote: { { result.info.quote | tojson } },
+    timestamp: "{{ timestamp }}",
+      answers: { { answers | tojson } }
 };
-</script>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
+
 </html>
