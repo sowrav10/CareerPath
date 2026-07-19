@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Career Prediction System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════════ ANIMATED BACKGROUND ═══════════════════════ -->
+  <div class="bg-canvas">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="particles" id="particles"></div>
+  </div>
+
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-icon">🧠</span>
+      <span class="nav-title">CareerAI</span>
+    </div>
+    <div class="nav-badge">Powered by Team Random Forest .</div>
+  </nav>
+
+  <!-- ═══════════════════════ HERO SECTION ═════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-in">✨ AI-Powered Career Guidance</div>
+      <h1 class="hero-title animate-slide-up">
+        AI Career<br /><span class="gradient-text">Prediction System</span>
+      </h1>
+      <p class="hero-subtitle animate-fade-in-delay">
+        Discover your most suitable academic and career pathway<br />
+        using Artificial Intelligence and Machine Learning.
+      </p>
+      <div class="hero-stats animate-fade-in-delay2">
+        <div class="stat-pill">🎯 3 Career Streams</div>
+        <div class="stat-pill">📊 20 Smart Questions</div>
+        <div class="stat-pill">⚡ Instant Results</div>
+      </div>
+      <button class="btn-primary animate-fade-in-delay2" id="startBtn" onclick="startPrediction()">
+        <span class="btn-icon">🚀</span>
+        Start Prediction
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+    <div class="hero-visual animate-float">
+      <div class="brain-card">
+        <div class="brain-emoji">🧬</div>
+        <div class="brain-lines">
+          <div class="brain-line"></div>
+          <div class="brain-line"></div>
+          <div class="brain-line short"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ QUESTION FORM ════════════════════════════ -->
+  <section class="quiz-section hidden" id="quizSection">
+    <div class="quiz-container">
+
+      <!-- Progress Bar -->
+      <div class="progress-header">
+        <div class="progress-meta">
+          <span class="progress-label">Question <span id="currentQ">1</span> of 20</span>
+          <span class="progress-pct" id="progressPct">5%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar" style="width:5%"></div>
+        </div>
+        <div class="progress-dots" id="progressDots"></div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="question-card" id="questionCard">
+        <div class="question-number" id="qNumber">Q1</div>
+        <h2 class="question-text" id="questionText"></h2>
+        <div class="options-list" id="optionsList"></div>
+        <div class="validation-msg hidden" id="validationMsg">
+          ⚠️ Please select an answer to continue.
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="quiz-nav">
+        <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>
+          ← Previous
+        </button>
+        <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">
+          Next →
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ LOADING OVERLAY ══════════════════════════ -->
+  <div class="loading-overlay hidden" id="loadingOverlay">
+    <div class="loading-card">
+      <div class="loader-ring"></div>
+      <div class="loading-text">Analysing your answers…</div>
+      <div class="loading-sub">Our AI is computing your ideal career path</div>
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ FLASH ERROR ══════════════════════════════ -->
+  {% if error %}
+  <div class="flash-error" id="flashError">
+    ⚠️ {{ error }}
+    <button onclick="document.getElementById('flashError').remove()">✕</button>
+  </div>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>
