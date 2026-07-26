@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
     rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -38,7 +38,17 @@
       <span class="nav-version">v2.0</span>
     </div>
     <div class="nav-actions">
-      <div class="nav-badge">
+      <!-- Language Switcher -->
+      <div class="lang-toggle" role="radiogroup" aria-label="Language Selector">
+        <button type="button" class="lang-btn active" id="langEnBtn" onclick="switchLanguage('en')" title="English">
+          <span class="lang-flag">🇬🇧</span> EN
+        </button>
+        <button type="button" class="lang-btn" id="langBnBtn" onclick="switchLanguage('bn')" title="বাংলা">
+          <span class="lang-flag">🇧🇩</span> বাংলা
+        </button>
+      </div>
+
+      <div class="nav-badge" id="navBadgeText">
         <span class="badge-dot"></span>
         Certified Analysis
       </div>
@@ -266,7 +276,7 @@
       answers: {{ answers | tojson }}
     };
   </script>
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}?v=5.0"></script>
 
   <!-- ═══════════════════════ NEURAL CANVAS ANIMATION ═════════════════ -->
   <script>

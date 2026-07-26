@@ -294,7 +294,64 @@ body {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+}
+
+/* ── Language Switcher ─────────────────────────────────────────────────── */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  background: rgba(12, 18, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  line-height: 1;
+}
+
+.lang-flag {
+  font-size: 0.95rem;
+}
+
+.lang-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lang-btn.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--emerald-2) 0%, var(--emerald-3) 100%);
+  box-shadow: 0 2px 12px var(--emerald-glow);
+}
+
+/* Bangla language font application */
+body.lang-bn {
+  font-family: 'Hind Siliguri', 'Space Grotesk', var(--font-primary);
+}
+
+body.lang-bn .question-text,
+body.lang-bn .option-text,
+body.lang-bn .hero-title,
+body.lang-bn .hero-subtitle {
+  font-family: 'Hind Siliguri', sans-serif;
+  line-height: 1.6;
 }
 
 .nav-badge {

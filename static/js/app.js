@@ -12,7 +12,7 @@
                   1 = Sleep Apnea-aligned,
                   2 = Hypersomnia/Circadian-aligned)
    ═══════════════════════════════════════════════════════════════ */
-const QUESTIONS = [
+const QUESTIONS_EN = [
   {
     id: 1,
     text: "How long does it typically take you to fall asleep after getting into bed?",
@@ -195,6 +195,272 @@ const QUESTIONS = [
   }
 ];
 
+const QUESTIONS_BN = [
+  {
+    id: 1,
+    text: "বিছানায় শোয়ার পর আপনার ঘুমাতে সাধারণত কত সময় লাগে?",
+    options: [
+      "৩০–৬০ মিনিটের বেশি — মাথায় নানা চিন্তা ঘুরতে থাকে",
+      "দ্রুত ঘুমিয়ে পড়ি কিন্তু হুট করে শ্বাসকষ্ট বা নাক ডাকার সাথে ঘুম ভাঙে",
+      "বিছানায় শোয়ার সাথে সাথেই প্রায় অনিচ্ছাকৃতভাবে ঘুমিয়ে পড়ি"
+    ]
+  },
+  {
+    id: 2,
+    text: "সাধারণ রাতে আপনার ঘুমের সময়কাল কেমন হয়?",
+    options: [
+      "৬ ঘণ্টার কম — বেশি সময় ধরে ঘুমিয়ে থাকতে পারি না",
+      "৬–৮ ঘণ্টা ঘুমাই, কিন্তু সকালে উঠেও ক্লান্ত লাগে",
+      "৯ ঘণ্টা বা তার বেশি ঘুমাই, তবুও সারাদিন ক্লান্ত বোধ করি"
+    ]
+  },
+  {
+    id: 3,
+    text: "ঘুমের সময় আপনার বা সঙ্গীর চোখে নিচের কোন লক্ষণটি পড়ে?",
+    options: [
+      "বারবার এপাশ-ওপাশ করা, অস্থিরতা বা ঘুমের ঘোরে কথা বলা",
+      "বিকট শব্দে নাক ডাকা, শ্বাসনালী আটকে আসা বা দম বন্ধ হওয়া",
+      "খুব গভীর, নিথর ঘুম যা থেকে ওঠানো প্রায় অসম্ভব"
+    ]
+  },
+  {
+    id: 4,
+    text: "সকালে ঘুম থেকে ওঠার পর আপনার অনুভূতি কেমন হয়?",
+    options: [
+      "সচেতন কিন্তু হতাশ — অনেক আগেই ঘুম ভেঙে জেগে বসে আছি",
+      "প্রচণ্ড ঝিমুনি ভাব, মুখ শুকিয়ে থাকা বা মাথাব্যথা",
+      "মনে হয় যেন আরও ৪–৫ ঘণ্টা ঘুমাতে পারলে ভালো হতো"
+    ]
+  },
+  {
+    id: 5,
+    text: "দিনে অনিয়ন্ত্রিতভাবে ঘুম আসার প্রবণতা কত প্রায়ই হয়?",
+    options: [
+      "খুব কম — ক্লান্ত লাগলেও সারাদিন জেগে থাকতে পারি",
+      "মাঝে মাঝে — বিশেষ করে খাবার খাওয়ার পর বা গরম পরিবেশে",
+      "প্রায়ই — মিটিংয়ে, বই পড়ার সময় বা গাড়ি চালানোর সময়ও ঘুম চলে আসে"
+    ]
+  },
+  {
+    id: 6,
+    text: "আপনার সাধারণ ঘুমের সময়সূচী কেমন?",
+    options: [
+      "নির্দিষ্ট সময়ে ঘুমাতে যাই কিন্তু ঘণ্টার পর ঘণ্টা ঘুম আসে না",
+      "তাড়াতাড়ি ঘুমানোর চেষ্টা করি কিন্তু রাতে বারবার ঘুম ভেঙে যায়",
+      "রাত ২–৩ টার আগে ঘুম আসে না এবং দুপুরে ঘুম থেকে উঠি"
+    ]
+  },
+  {
+    id: 7,
+    text: "ঘুমানোর চেষ্টা করার সময় কেমন অনুভূতি বা চিন্তা মনে আসে?",
+    options: [
+      "মাথায় চিন্তার ঝড়, দুশ্চিন্তা, উদ্বেগ বা মন শান্ত করতে না পারা",
+      "পায়ে অস্বস্তি বা ঝিঁঝিঁ ধরার অনুভূতি (রেস্টলেস লেগস)",
+      "প্রচণ্ড ঘুম পায় কিন্তু সময়ের হিসাব এলোমেলো লাগে"
+    ]
+  },
+  {
+    id: 8,
+    text: "ঘুমের সমস্যা দিনে আপনার শক্তি ও মেজাজে কেমন প্রভাব ফেলে?",
+    options: [
+      "মেজাজ খিটখিটে হয়, উদ্বেগ বা কাজে মনোযোগের অভাব হয়",
+      "শারীরিকভাবে প্রচণ্ড ক্লান্তি ও সকালে বারবার মাথাব্যথা হয়",
+      "মানসিকভাবে অলস ও অস্পষ্ট লাগে, সারাদিন ধোঁয়াশাচ্ছন্ন অনুভূতি হয়"
+    ]
+  },
+  {
+    id: 9,
+    text: "ঘুম নিয়ন্ত্রণের জন্য আপনি নিচের কোনটির ওপর নির্ভর করেন?",
+    options: [
+      "ঘুমের ওষুধ, হার্বাল সাপ্লিমেন্ট বা অ্যালকোহল",
+      "নাক ডাকা বিরোধী বালিশ, CPAP মেশিন বা হেলান দিয়ে শোয়া",
+      "একাধিক অ্যালার্ম, কালো পর্দা বা দিনে একাধিকবার ঘুমানো"
+    ]
+  },
+  {
+    id: 10,
+    text: "রাতে আপনার কতবার ঘুম ভেঙে যায়?",
+    options: [
+      "রাতে ২–৪ বার বা তার বেশি ভেঙে যায় এবং পুনরায় ঘুমানো কঠিন হয়",
+      "হঠাৎ হাঁপাতে হাঁপাতে বা বুক ধড়ফড় করে ঘুম ভেঙে যায়",
+      "খুব কম — একবার ঘুমালে সহজে ঘুম ভাঙে না"
+    ]
+  },
+  {
+    id: 11,
+    text: "ঘুম নিয়ে কি আপনি নিজে উদ্বিগ্ন বা চিন্তিত বোধ করেন?",
+    options: [
+      "হ্যাঁ — শোয়ার সময় হলে ভয় লাগে কারণ জানি ঘুম আসবে না",
+      "মাঝে মাঝে — সকালে উঠে ক্লান্ত লাগার চিন্তায় থাকি",
+      "না — আমি ঘুমের জন্য মুখিয়ে থাকি এবং যে কোনো জায়গায় ঘুমাতে পারি"
+    ]
+  },
+  {
+    id: 12,
+    text: "আপনার শারীরিক গঠন ও ওজন কেমন?",
+    options: [
+      "স্বাভাবিক বা হালকা গড়ন, ওজন নিয়ে কোনো বিশেষ চিন্তা নেই",
+      "অতিরিক্ত ওজন বা মোটা ঘাড় — অন্যরা বলে আমি জোরে নাক ডাকি",
+      "যেকোনো গড়ন, তবে সারাদিন শারীরিকভাবে নিস্তেজ লাগে"
+    ]
+  },
+  {
+    id: 13,
+    text: "দিনের কোন সময়ে আপনি সবচেয়ে বেশি মানসিক চাঙ্গা ও কর্মক্ষম থাকেন?",
+    options: [
+      "সকালে — যদিও রাতের বাজে ঘুমের কারণে ক্লান্ত থাকি",
+      "দুপুরের দিকে — সকালে ক্লান্তির কারণে কাজ করা কঠিন হয়",
+      "গভীর রাতে — মাঝরাতের পর সবচেয়ে বেশি জাগ্রত বোধ করি"
+    ]
+  },
+  {
+    id: 14,
+    text: "ঘুমের সমস্যা আপনার সামাজিক ও কর্মজীবনে কেমন প্রভাব ফেলে?",
+    options: [
+      "ক্লান্তি ও খিটখিটে মেজাজের কারণে সামাজিক অনুষ্ঠান এড়িয়ে চলি",
+      "প্রচণ্ড ঝিমুনির কারণে কর্মক্ষেত্রে সমস্যা হয়েছে",
+      "সকালে উঠতে না পারার কারণে নিয়মিত সকালের কাজ মিস হয়"
+    ]
+  },
+  {
+    id: 15,
+    text: "কতদিন ধরে আপনি গুরুতর ঘুমের সমস্যা অনুভব করছেন?",
+    options: [
+      "কয়েক মাস থেকে কয়েক বছর ধরে — এটি ক্রমাগত চলছে",
+      "মাঝে মাঝে হয় — ওজন বাড়লে বা সর্দি হলে বাড়ে",
+      "জীবনের অধিকাংশ সময় — আমি সবসময়ই রাতজাগা বা গভীর ঘুমকাতুরে"
+    ]
+  },
+  {
+    id: 16,
+    text: "কোন শারীরিক উপসর্গটি আপনি সবচেয়ে বেশি অনুভব করেছেন?",
+    options: [
+      "ঘুমের অভাবে মাথাব্যথা, চোখের ক্লান্তি, মাংসপেশিতে টান",
+      "গলা শুকিয়ে ঘুম থেকে ওঠা, মুখের শুষ্কতা বা সকালে মাথাব্যথা",
+      "হাত-পায়ে ভারী ভাব, সারাদিন মানসিক ধীরগতি"
+    ]
+  },
+  {
+    id: 17,
+    text: "দিনে ঘুমানোর চেষ্টা করলে সাধারণত কী ঘটে?",
+    options: [
+      "ক্লান্ত থাকলেও ঘুমাতে পারি না — মন সচল থাকে",
+      "মাঝে মাঝে ঘুমাই কিন্তু তারপরও সতেজ লাগে না",
+      "সহজেই ২–৩ ঘণ্টা ঘুমিয়ে পড়ি এবং আরও ঘুমাতে ইচ্ছা করে"
+    ]
+  },
+  {
+    id: 18,
+    text: "ক্যাফেইন (চা, কফি, এনার্জি ড্রিংক) আপনার ওপর কেমন প্রভাব ফেলে?",
+    options: [
+      "ক্লান্তি কাটাতে খাই কিন্তু এতে রাতের ঘুম আরও বাজে হয়",
+      "কাজ করার জন্য দরকার হয় কিন্তু পুরোপুরি ক্লান্তি দূর হয় না",
+      "প্রচুর ক্যাফেইন খেলেও সারাদিন জেগে থাকা কঠিন হয়"
+    ]
+  },
+  {
+    id: 19,
+    text: "কোনো ডাক্তার বা সঙ্গী কি আপনাকে ঘুমের জন্য পরামর্শ নিতে বলেছেন?",
+    options: [
+      "হ্যাঁ — তারা বলে আমাকে সব সময় ক্লান্ত ও খিটখিটে দেখায়",
+      "হ্যাঁ — তারা রাতে আমার নাক ডাকা বা শ্বাস বন্ধ হওয়া নিয়ে চিন্তিত",
+      "হ্যাঁ — তারা আমার অতিরিক্ত ঘুম বা দিনের বেলা ঘুমানো নিয়ে চিন্তিত"
+    ]
+  },
+  {
+    id: 20,
+    text: "কোন বাক্যটি ঘুমের সাথে আপনার সম্পর্ক সবচেয়ে ভালোভাবে প্রকাশ করে?",
+    options: [
+      "আমি ব্যাকুলভাবে ঘুমাতে চাই কিন্তু আমার শরীর ও মন দেয় না",
+      "আমি ঘুমাই কিন্তু ঘুম থেকে ওঠার পর মনে হয় বিন্দুমাত্র বিশ্রাম হয়নি",
+      "আমি যেকোনো সময়, যেকোনো স্থানে ঘুমাতে পারি — ঘুম কখনোই যথেষ্ট নয়"
+    ]
+  }
+];
+
+/* Default language state */
+let currentLang = localStorage.getItem("sleepai_lang") || "en";
+let QUESTIONS = currentLang === "bn" ? QUESTIONS_BN : QUESTIONS_EN;
+
+/* UI Language Translations Dictionary */
+const I18N = {
+  en: {
+    heroTitleLine: "Sleep Disturbance",
+    heroTitleGrad: "Analyzer",
+    heroSubtitle: "Advanced AI-powered sleep pattern recognition system.<br />Get personalized clinical insights and a digital screening certificate.",
+    btnStart: "Start Free Assessment",
+    navBadge: "Medical Screening",
+    step1Title: "Patient Profile",
+    step1Sub: "Enter your details for accurate clinical analysis and certificate generation.",
+    lblFullName: "Full Name",
+    lblAge: "Age",
+    lblGender: "Gender",
+    btnBeginQuiz: "Begin 20 Questions",
+    btnBack: "Back",
+    btnPrev: "Previous",
+    btnNext: "Next",
+    btnSubmit: "Submit & Generate Certificate",
+    qPrefix: "Question",
+    ofWord: "of",
+    validationErr: "⚠️ Please select an answer to continue.",
+  },
+  bn: {
+    heroTitleLine: "ঘুমের সমস্যা",
+    heroTitleGrad: "বিশ্লেষক AI",
+    heroSubtitle: "কৃত্রিম বুদ্ধিমত্তা ভিত্তিক উন্নত স্লিপ প্যাটার্ন বিশ্লেষণ ব্যবস্থা।<br />আপনার ব্যক্তিগত স্বাস্থ্য বিবরণী ও ডিজিটাল স্ক্রিনিং সার্টিফিকেট পান।",
+    btnStart: "বিনামূল্যে পরীক্ষা শুরু করুন",
+    navBadge: "চিকিৎসা স্ক্রিনিং",
+    step1Title: "রোগীর বিবরণী",
+    step1Sub: "সঠিক ক্লিনিকাল বিশ্লেষণ ও সনদের জন্য আপনার তথ্য দিন।",
+    lblFullName: "পূর্ণ নাম",
+    lblAge: "বয়স",
+    lblGender: "লিঙ্গ",
+    btnBeginQuiz: "২০টি প্রশ্ন শুরু করুন",
+    btnBack: "পিছনে",
+    btnPrev: "পূর্ববর্তী",
+    btnNext: "পরবর্তী",
+    btnSubmit: "জমা দিন ও সার্টিফিকেট তৈরি করুন",
+    qPrefix: "প্রশ্ন",
+    ofWord: "এর মধ্যে",
+    validationErr: "⚠️ চালিয়ে যেতে একটি উত্তর নির্বাচন করুন।",
+  }
+};
+
+/* Language Switcher Logic */
+function switchLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem("sleepai_lang", lang);
+  QUESTIONS = (lang === "bn") ? QUESTIONS_BN : QUESTIONS_EN;
+
+  // Toggle active class on buttons
+  const enBtn = document.getElementById("langEnBtn");
+  const bnBtn = document.getElementById("langBnBtn");
+  if (enBtn) enBtn.classList.toggle("active", lang === "en");
+  if (bnBtn) bnBtn.classList.toggle("active", lang === "bn");
+
+  // Toggle body font class
+  document.body.classList.toggle("lang-bn", lang === "bn");
+
+  // Update dynamic UI texts if present
+  applyLanguageToUI();
+}
+
+function applyLanguageToUI() {
+  const dict = I18N[currentLang];
+  if (!dict) return;
+
+  const navBadgeText = document.getElementById("navBadgeText");
+  if (navBadgeText) {
+    navBadgeText.innerHTML = `<span class="badge-dot"></span> ${dict.navBadge}`;
+  }
+
+  // Update Question rendering if quiz is active
+  const quizSec = document.getElementById("quizSection");
+  if (quizSec && !quizSec.classList.contains("hidden")) {
+    renderQuestion(currentIndex);
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    STATE
    ═══════════════════════════════════════════════════════════════ */
@@ -211,6 +477,7 @@ let patientProfile = {
    ═══════════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
   buildProgressDots();
+  switchLanguage(currentLang);
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -350,10 +617,22 @@ function renderQuestion(index) {
   // Nav buttons
   document.getElementById("prevBtn").disabled = (index === 0);
   const nextBtn = document.getElementById("nextBtn");
-  nextBtn.textContent = (index === QUESTIONS.length - 1) ? "🔍 Submit & Generate Certificate" : "Next →";
+  const dict = I18N[currentLang] || I18N.en;
+  nextBtn.innerHTML = (index === QUESTIONS.length - 1)
+    ? `🔍 ${dict.btnSubmit}`
+    : `${dict.btnNext} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
 
-  // Hide validation
-  document.getElementById("validationMsg").classList.add("hidden");
+  const prevBtn = document.getElementById("prevBtn");
+  if (prevBtn) {
+    prevBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> ${dict.btnPrev}`;
+  }
+
+  // Validation message
+  const valMsg = document.getElementById("validationMsg");
+  if (valMsg) {
+    valMsg.textContent = dict.validationErr;
+    valMsg.classList.add("hidden");
+  }
 
   // Progress dots
   updateProgressDots(index);
