@@ -13,7 +13,7 @@ GOOGLE_SHEET_WEBHOOK_URL = ""
 API_KEY = ""          # e.g. your Gemini or OpenAI key
 
 # ─── Flask Settings ──────────────────────────────────────────────────────────
-DEBUG = False          # Set True during local development
+DEBUG = True           # Set True during local development
 SECRET_KEY = "sleep-disturbance-analyzer-secret-2025"   # Change in production
 
 # ─── Model Path ──────────────────────────────────────────────────────────────

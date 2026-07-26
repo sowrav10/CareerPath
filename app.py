@@ -29,6 +29,14 @@ logger = logging.getLogger(__name__)
 # ─── Flask App ────────────────────────────────────────────────────────────────
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 CSV_LOG_FILE = "user_responses_log.csv"
 
