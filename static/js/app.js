@@ -1,193 +1,196 @@
 /**
  * app.js
  * -------
- * Complete client-side logic for the Career Predictor.
- * Handles: question rendering, navigation, validation,
- * API submission, and PDF generation.
+ * Complete client-side logic for the Sleep Disturbance Analyzer.
+ * Handles: Patient Registration step, 20-question navigation,
+ * validation, API submission, and Official Certificate PDF Generation.
  */
 
 /* ═══════════════════════════════════════════════════════════════
-   QUESTION BANK  (option index 0=Science, 1=Commerce, 2=Humanities)
+   QUESTION BANK
+   (option index: 0 = Insomnia-aligned,
+                  1 = Sleep Apnea-aligned,
+                  2 = Hypersomnia/Circadian-aligned)
    ═══════════════════════════════════════════════════════════════ */
 const QUESTIONS = [
   {
     id: 1,
-    text: "Which school subject do you enjoy the most?",
+    text: "How long does it typically take you to fall asleep after getting into bed?",
     options: [
-      "Science (Biology / Physics / Chemistry / Mathematics / ICT)",
-      "Business Math / Accounting / Finance",
-      "Bangla / Social Science / History / Civics / Geography"
+      "More than 30–60 minutes — my mind keeps racing",
+      "I fall asleep quickly but wake up gasping or snoring",
+      "I fall asleep almost instantly, often unintentionally"
     ]
   },
   {
     id: 2,
-    text: "What type of content do you like most and usually watch or read in your free time?",
+    text: "How would you describe your sleep duration on a typical night?",
     options: [
-      "Technology, science, health, mathematics",
-      "Business, startups, investment",
-      "Politics, society, psychology, literature"
+      "Less than 6 hours — I just can't stay asleep long enough",
+      "6–8 hours, but I feel completely unrefreshed in the morning",
+      "9 hours or more, yet I still feel exhausted all day"
     ]
   },
   {
     id: 3,
-    text: "What kind of problems do you enjoy solving?",
+    text: "Do you or a bed partner notice any of the following during your sleep?",
     options: [
-      "Logical / mathematical problems",
-      "Business / financial problems",
-      "Social / ethical problems"
+      "Frequent tossing and turning, restlessness, or talking in sleep",
+      "Loud snoring, choking sounds, or visibly pausing breathing",
+      "Very deep, motionless sleep that's impossible to wake from"
     ]
   },
   {
     id: 4,
-    text: "What would your dream job look like?",
+    text: "How do you feel when you first wake up in the morning?",
     options: [
-      "Engineer, doctor, scientist, or programmer",
-      "Business owner, banker, or financial analyst",
-      "Writer, lawyer, social worker, or journalist"
+      "Alert but frustrated — I've been awake for hours already",
+      "Extremely groggy, with a dry mouth or headache",
+      "Like I could sleep another 4–5 hours no matter what time it is"
     ]
   },
   {
     id: 5,
-    text: "Which activity do you enjoy most?",
+    text: "How often do you experience uncontrollable daytime sleepiness?",
     options: [
-      "Conducting experiments or coding",
-      "Managing budgets or analysing markets",
-      "Writing stories, debating, or helping others"
+      "Rarely — I'm tired but can usually stay awake during the day",
+      "Occasionally — especially after meals or in warm environments",
+      "Very often — I fall asleep during meetings, reading, or driving"
     ]
   },
   {
     id: 6,
-    text: "Which of these skills best describes you?",
+    text: "What is your typical sleep schedule?",
     options: [
-      "Analytical and logical thinker",
-      "Strategic and financially minded",
-      "Creative and empathetic communicator"
+      "I go to bed at a regular time but can't sleep for hours",
+      "I try to sleep early but wake up frequently during the night",
+      "I naturally stay up past 2–3 AM and wake up in the afternoon"
     ]
   },
   {
     id: 7,
-    text: "What do you prefer to study in depth?",
+    text: "What kinds of thoughts or sensations occur as you try to fall asleep?",
     options: [
-      "How things work (physics, chemistry, biology, computers)",
-      "How money and business work (economics, accounting)",
-      "How society and people work (history, psychology, civics)"
+      "Racing thoughts, worry, anxiety, or an inability to 'switch off'",
+      "I feel discomfort or tingling in my legs (restless legs)",
+      "I feel completely sleepy but also feel disoriented about time"
     ]
   },
   {
     id: 8,
-    text: "If you had to write a school project, which topic would you choose?",
+    text: "How does your sleep problem affect your energy and mood during the day?",
     options: [
-      "Climate change, robotics, or human anatomy",
-      "Stock markets, startup culture, or economic policy",
-      "Human rights, cultural heritage, or social media impact"
+      "I'm irritable, anxious, and have difficulty concentrating",
+      "I feel physically fatigued and have recurring morning headaches",
+      "I feel mentally foggy and sluggish, like I'm in a fog all day"
     ]
   },
   {
     id: 9,
-    text: "What type of books or articles do you read voluntarily?",
+    text: "Do you rely on any of the following to manage your sleep?",
     options: [
-      "Science fiction, popular science, technology blogs",
-      "Business biographies, investment guides, finance news",
-      "Literature, political commentary, psychology books"
+      "Sleep medication, herbal supplements, or alcohol to fall asleep",
+      "Positional aids (anti-snore pillow, CPAP), or sleeping propped up",
+      "Multiple alarms, blackout curtains, or napping several times a day"
     ]
   },
   {
     id: 10,
-    text: "What motivates you most in your studies?",
+    text: "How often do you wake up during the night?",
     options: [
-      "Discovering how the world works scientifically",
-      "Understanding wealth creation and economic systems",
-      "Understanding people, history, and social change"
+      "2–4+ times per night, and I struggle to fall back asleep",
+      "I often wake up suddenly, gasping or heart racing",
+      "Rarely — once I'm asleep, almost nothing can wake me up"
     ]
   },
   {
     id: 11,
-    text: "Which of these extracurricular activities appeals to you most?",
+    text: "Do you feel anxious or worried about sleep itself?",
     options: [
-      "Science Olympiad, Robotics Club, Math Competition",
-      "Business Club, Entrepreneurship Fair, Investment Challenge",
-      "Debate Team, Drama Club, Community Service"
+      "Yes — I dread bedtime because I know I won't be able to sleep",
+      "Sometimes — I'm more worried about waking up exhausted",
+      "No — I actually look forward to sleep and could sleep anywhere"
     ]
   },
   {
     id: 12,
-    text: "When you face a major decision, what guides you most?",
+    text: "What is your body weight and physical profile like?",
     options: [
-      "Data, facts, and logical reasoning",
-      "Cost-benefit analysis and strategic planning",
-      "Values, ethics, and the impact on others"
+      "Average or lean build with no significant weight concerns",
+      "Overweight or have a large neck — others say I snore loudly",
+      "Any build, but I feel physically lethargic most of the day"
     ]
   },
   {
     id: 13,
-    text: "Which university faculty interests you most?",
+    text: "When are you most mentally alert and productive?",
     options: [
-      "Faculty of Science / Engineering / Medicine / IT",
-      "Faculty of Business / Economics / Finance / Commerce",
-      "Faculty of Arts / Law / Social Science / Humanities"
+      "In the morning — though I'm exhausted from poor night sleep",
+      "Midday — mornings are rough due to fatigue",
+      "Late at night — I feel most awake after midnight"
     ]
   },
   {
     id: 14,
-    text: "How would your classmates describe you?",
+    text: "How does your sleep problem affect your social and work life?",
     options: [
-      "The one who always understands maths and science",
-      "The one who talks about business ideas and money",
-      "The one who loves debating, writing, and storytelling"
+      "I avoid social events because of fatigue and irritability",
+      "I've had workplace incidents due to extreme drowsiness",
+      "I miss morning commitments regularly due to being unable to wake"
     ]
   },
   {
     id: 15,
-    text: "Which type of future project excites you the most?",
+    text: "How long have you been experiencing significant sleep problems?",
     options: [
-      "Developing a vaccine, building a bridge, or creating an app",
-      "Launching a startup, managing investments, or consulting",
-      "Writing a novel, running an NGO, or working in politics"
+      "Several months to years — it's been ongoing and persistent",
+      "On and off, often worse when I gain weight or am congested",
+      "Most of my life — I've always been a 'night owl' or heavy sleeper"
     ]
   },
   {
     id: 16,
-    text: "What is your strongest academic performance area?",
+    text: "Which physical symptom have you experienced most often?",
     options: [
-      "Mathematics and the natural sciences",
-      "Accounting, economics, and business studies",
-      "Languages, social sciences, and the arts"
+      "Headaches from lack of sleep, eye fatigue, muscle tension",
+      "Waking with a sore throat, dry mouth, or morning headaches",
+      "Heavy, leaden feeling in limbs, cognitive slowness all day"
     ]
   },
   {
     id: 17,
-    text: "Which of these would you rather do on a weekend?",
+    text: "What typically happens when you try to take a daytime nap?",
     options: [
-      "Build something, code, or run a science experiment",
-      "Analyse stocks, read about startups, or make a budget plan",
-      "Read fiction, visit a museum, or volunteer for a cause"
+      "I can't nap even when tired — my mind stays active",
+      "I nap occasionally but still feel unrested afterwards",
+      "I nap for 2–3 hours easily and feel I could sleep even more"
     ]
   },
   {
     id: 18,
-    text: "If you could win an award, which would mean most to you?",
+    text: "How does caffeine (coffee, tea, energy drinks) affect you?",
     options: [
-      "Best Young Scientist / Best Tech Innovator",
-      "Best Young Entrepreneur / Best Financial Analyst",
-      "Best Young Author / Best Social Activist"
+      "I drink it to cope with tiredness but it makes night sleep worse",
+      "I need it to function but it doesn't fully solve my fatigue",
+      "Even heavy caffeine use barely keeps me awake during the day"
     ]
   },
   {
     id: 19,
-    text: "Which industry would you most like to work in long-term?",
+    text: "Have you been told by a doctor or partner to seek help for sleep?",
     options: [
-      "Healthcare, technology, engineering, or research",
-      "Banking, finance, e-commerce, or consulting",
-      "Media, education, law, or public policy"
+      "Yes — they say I look tired all the time and am irritable",
+      "Yes — they're worried about my snoring or breathing at night",
+      "Yes — they're concerned about how much I sleep or daytime napping"
     ]
   },
   {
     id: 20,
-    text: "Finally, what kind of impact do you want to make in the world?",
+    text: "Which statement best describes your overall relationship with sleep?",
     options: [
-      "Solve scientific problems and advance technology",
-      "Create wealth, build businesses, and drive economic growth",
-      "Influence society, protect rights, and shape culture"
+      "I desperately want to sleep but my body and mind won't let me",
+      "I sleep but wake feeling like I barely rested at all",
+      "I could sleep at any time, in any place — sleep is never enough"
     ]
   }
 ];
@@ -197,21 +200,26 @@ const QUESTIONS = [
    ═══════════════════════════════════════════════════════════════ */
 let currentIndex = 0;            // 0-based index into QUESTIONS
 const answers   = {};            // { Q1: 0|1|2, Q2: ..., ... }
+let patientProfile = {
+  userName: "",
+  age: "",
+  gender: ""
+};
 
 /* ═══════════════════════════════════════════════════════════════
-   INIT (particles)
+   INIT
    ═══════════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
   buildProgressDots();
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   HERO → START
+   HERO → USER INFO STEP
    ═══════════════════════════════════════════════════════════════ */
-function startPrediction() {
+function showUserInfoStep() {
   const hero = document.getElementById("hero");
-  const quiz = document.getElementById("quizSection");
-  if (!hero || !quiz) return;
+  const infoSec = document.getElementById("userInfoSection");
+  if (!hero || !infoSec) return;
 
   hero.style.transition = "opacity 0.4s ease, transform 0.4s ease";
   hero.style.opacity = "0";
@@ -219,10 +227,50 @@ function startPrediction() {
 
   setTimeout(() => {
     hero.classList.add("hidden");
-    quiz.classList.remove("hidden");
-    renderQuestion(0);
+    infoSec.classList.remove("hidden");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, 400);
+}
+
+function backToHero() {
+  const hero = document.getElementById("hero");
+  const infoSec = document.getElementById("userInfoSection");
+  if (!hero || !infoSec) return;
+
+  infoSec.classList.add("hidden");
+  hero.classList.remove("hidden");
+  hero.style.opacity = "1";
+  hero.style.transform = "translateY(0)";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUBMIT PATIENT INFO → START QUIZ
+   ═══════════════════════════════════════════════════════════════ */
+function submitPatientInfo(event) {
+  event.preventDefault();
+
+  const nameVal = document.getElementById("userName").value.trim();
+  const ageVal = document.getElementById("userAge").value.trim();
+  const genderVal = document.getElementById("userGender").value;
+
+  if (!nameVal || !ageVal || !genderVal) {
+    alert("Please fill in your name, age, and gender to proceed.");
+    return;
+  }
+
+  patientProfile.userName = nameVal;
+  patientProfile.age = ageVal;
+  patientProfile.gender = genderVal;
+
+  const infoSec = document.getElementById("userInfoSection");
+  const quizSec = document.getElementById("quizSection");
+
+  infoSec.classList.add("hidden");
+  quizSec.classList.remove("hidden");
+
+  renderQuestion(0);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -246,7 +294,7 @@ function updateProgressDots(activeIndex) {
     if (!dot) return;
     dot.className = "p-dot";
     const qKey = `Q${i + 1}`;
-    if (i === activeIndex)          dot.classList.add("current");
+    if (i === activeIndex)               dot.classList.add("current");
     else if (answers[qKey] !== undefined) dot.classList.add("answered");
   });
 }
@@ -258,7 +306,6 @@ function renderQuestion(index) {
   const q = QUESTIONS[index];
   const pct = Math.round(((index + 1) / QUESTIONS.length) * 100);
 
-  // Update counters
   document.getElementById("currentQ").textContent  = index + 1;
   document.getElementById("progressPct").textContent = `${pct}%`;
   document.getElementById("progressBar").style.width  = `${pct}%`;
@@ -303,7 +350,7 @@ function renderQuestion(index) {
   // Nav buttons
   document.getElementById("prevBtn").disabled = (index === 0);
   const nextBtn = document.getElementById("nextBtn");
-  nextBtn.textContent = (index === QUESTIONS.length - 1) ? "🚀 Submit" : "Next →";
+  nextBtn.textContent = (index === QUESTIONS.length - 1) ? "🔍 Submit & Generate Certificate" : "Next →";
 
   // Hide validation
   document.getElementById("validationMsg").classList.add("hidden");
@@ -318,14 +365,12 @@ function renderQuestion(index) {
 function selectOption(questionIndex, optionIndex) {
   answers[`Q${questionIndex + 1}`] = optionIndex;
 
-  // Update UI
   const items = document.querySelectorAll(".option-item");
   items.forEach((item, i) => {
     item.classList.toggle("selected", i === optionIndex);
     item.setAttribute("aria-checked", i === optionIndex ? "true" : "false");
   });
 
-  // Hide validation message
   document.getElementById("validationMsg").classList.add("hidden");
   updateProgressDots(questionIndex);
 }
@@ -362,10 +407,9 @@ function prevQuestion() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SUBMIT
+   SUBMIT ANSWERS & USER DEMOGRAPHICS TO BACKEND
    ═══════════════════════════════════════════════════════════════ */
 async function submitAnswers() {
-  // Final validation: all 20 must be answered
   for (let i = 1; i <= QUESTIONS.length; i++) {
     if (answers[`Q${i}`] === undefined) {
       alert(`Please answer Question ${i} before submitting.`);
@@ -377,20 +421,26 @@ async function submitAnswers() {
 
   showLoading(true);
 
+  const payload = {
+    user_name: patientProfile.userName,
+    age: parseInt(patientProfile.age, 10),
+    gender: patientProfile.gender,
+    ...answers
+  };
+
   try {
     const response = await fetch("/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(answers),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-      throw new Error(data.error || "Prediction failed. Please try again.");
+      throw new Error(data.error || "Analysis failed. Please try again.");
     }
 
-    // Redirect to result page
     window.location.href = "/result";
 
   } catch (err) {
@@ -425,8 +475,24 @@ function showError(msg) {
   }, 6000);
 }
 
+/* Helper to convert HTML image element to Data URL */
+function getBase64Image(imgEl) {
+  if (!imgEl) return null;
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = imgEl.naturalWidth || imgEl.width || 300;
+    canvas.height = imgEl.naturalHeight || imgEl.height || 300;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(imgEl, 0, 0);
+    return canvas.toDataURL("image/png");
+  } catch (e) {
+    console.error("Error converting image to data URL:", e);
+    return null;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
-   CARD SHAKE ANIMATION (CSS injection for missing keyframe)
+   CARD SHAKE ANIMATION
    ═══════════════════════════════════════════════════════════════ */
 (function injectShake() {
   const style = document.createElement("style");
@@ -443,151 +509,148 @@ function showError(msg) {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   PDF GENERATION  (result page only)
+   HIGH-QUALITY OFFICIAL CERTIFICATE PDF GENERATION
+   (Embeds SleepAI LOGO.png & Seal Logo.png)
    ═══════════════════════════════════════════════════════════════ */
-function downloadPDF() {
-  if (typeof RESULT_DATA === "undefined") return;
+function downloadCertificatePDF() {
+  if (typeof RESULT_DATA === "undefined" || typeof USER_INFO === "undefined") return;
 
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
 
-  const W = 210;
-  let y = 20;
+  const W = 297;
+  const H = 210;
 
-  // ─ Header ─
-  doc.setFillColor(10, 22, 40);
-  doc.rect(0, 0, W, 40, "F");
-  doc.setFontSize(20);
-  doc.setTextColor(79, 142, 247);
+  // ─ Background & Gold Frame Borders ─
+  doc.setFillColor(8, 12, 18); // Deep Charcoal Obsidian
+  doc.rect(0, 0, W, H, "F");
+
+  // Outer Gold Decorative Border Frame
+  doc.setLineWidth(1.8);
+  doc.setDrawColor(245, 158, 11); // Sunset Gold
+  doc.rect(10, 10, W - 20, H - 20);
+
+  // Inner Fine Emerald Accent Frame
+  doc.setLineWidth(0.6);
+  doc.setDrawColor(16, 185, 129); // Emerald Green
+  doc.rect(14, 14, W - 28, H - 28);
+
+  // Corner Accent Circles
+  function corner(x, y) {
+    doc.setFillColor(245, 158, 11);
+    doc.circle(x, y, 2.5, "F");
+  }
+  corner(14, 14);
+  corner(W - 14, 14);
+  corner(14, H - 14);
+  corner(W - 14, H - 14);
+
+  // ─ Header SleepAI Text ─
+  let y = 28;
   doc.setFont("helvetica", "bold");
-  doc.text("AI Career Prediction System", W / 2, 18, { align: "center" });
-  doc.setFontSize(10);
+  doc.setFontSize(22);
+  doc.setTextColor(52, 211, 153); // Emerald Mint
+  doc.text("SleepAI", W / 2, y, { align: "center" });
+
+  y += 7;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
   doc.setTextColor(148, 163, 184);
-  doc.setFont("helvetica", "normal");
-  doc.text("Powered by Random Forest Machine Learning", W / 2, 28, { align: "center" });
-  doc.text(`Generated: ${RESULT_DATA.timestamp}`, W / 2, 36, { align: "center" });
+  doc.text("DIGITAL HEALTH SCREENING SYSTEM", W / 2, y, { align: "center" });
 
-  y = 52;
-
-  // ─ Result Highlight ─
-  doc.setFillColor(15, 30, 60);
-  doc.roundedRect(14, y, W - 28, 28, 4, 4, "F");
-  doc.setFontSize(14);
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.text(`Predicted Career Stream: ${RESULT_DATA.career}`, W / 2, y + 10, { align: "center" });
-  doc.setFontSize(11);
-  doc.setTextColor(79, 142, 247);
-  doc.text(`AI Confidence: ${RESULT_DATA.confidence}%`, W / 2, y + 21, { align: "center" });
-  y += 36;
-
-  // ─ Tagline ─
-  doc.setFontSize(10);
-  doc.setTextColor(100, 116, 139);
-  doc.setFont("helvetica", "italic");
-  const taglines = doc.splitTextToSize(RESULT_DATA.tagline, W - 28);
-  doc.text(taglines, W / 2, y, { align: "center" });
-  y += taglines.length * 6 + 8;
-
-  // ─ Scores ─
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(30, 80, 200);
-  doc.text("Score Breakdown", 14, y); y += 7;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(50, 50, 50);
-  const sc = RESULT_DATA.scores;
-  doc.text(`  Science: ${sc.Science}/20   Commerce: ${sc.Commerce}/20   Humanities: ${sc.Humanities}/20`, 14, y);
   y += 12;
+  doc.setFont("times", "bold");
+  doc.setFontSize(24);
+  doc.setTextColor(251, 191, 36); // Sunset Gold Title
+  doc.text("CERTIFICATE OF SLEEP HEALTH ASSESSMENT", W / 2, y, { align: "center" });
 
-  // ─ Helper: Section ─
-  function section(title, items) {
-    if (y > 260) { doc.addPage(); y = 20; }
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(30, 80, 200);
-    doc.text(title, 14, y); y += 7;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9.5);
-    doc.setTextColor(50, 50, 50);
-    items.forEach(item => {
-      if (y > 270) { doc.addPage(); y = 20; }
-      const lines = doc.splitTextToSize(`  • ${item}`, W - 30);
-      doc.text(lines, 14, y);
-      y += lines.length * 5 + 1;
-    });
-    y += 5;
-  }
-
-  section("Your Strengths",       RESULT_DATA.strengths);
-  section("Recommended Skills",   RESULT_DATA.skills);
-  section("University Subjects",  RESULT_DATA.subjects);
-  section("Job Opportunities",    RESULT_DATA.careers);
-  section("Future Growth Areas",  RESULT_DATA.growth);
-
-  // ─ Quote ─
-  if (y > 250) { doc.addPage(); y = 20; }
-  doc.setFont("helvetica", "italic");
+  y += 7;
+  doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139);
-  const qLines = doc.splitTextToSize(RESULT_DATA.quote, W - 28);
-  doc.text(qLines, W / 2, y, { align: "center" });
-  y += qLines.length * 5 + 12;
+  doc.setTextColor(148, 163, 184);
+  doc.text(`Certificate Registration ID: ${USER_INFO.certId}`, W / 2, y, { align: "center" });
 
-  // ─ Your Answers ─
-  doc.addPage(); y = 20;
+  // Divider Line
+  y += 6;
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(251, 191, 36);
+  doc.line(W / 2 - 60, y, W / 2 + 60, y);
+
+  // ─ Candidate Certification Statement ─
+  y += 12;
+  doc.setFont("times", "italic");
+  doc.setFontSize(11.5);
+  doc.setTextColor(203, 213, 225);
+  doc.text("This official certificate hereby verifies that", W / 2, y, { align: "center" });
+
+  y += 11;
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(13);
-  doc.setTextColor(30, 80, 200);
-  doc.text("Your Answers", 14, y); y += 10;
+  doc.setFontSize(21);
+  doc.setTextColor(255, 255, 255);
+  doc.text(USER_INFO.name.toUpperCase(), W / 2, y, { align: "center" });
 
-  const OPTS = [
-    ["Science (Biology / Physics / Chemistry / Mathematics / ICT)", "Business Math / Accounting / Finance", "Bangla / Social Science / History / Civics / Geography"],
-    ["Technology, science, health, mathematics", "Business, startups, investment", "Politics, society, psychology, literature"],
-    ["Logical / mathematical problems", "Business / financial problems", "Social / ethical problems"],
-    ["Engineer, doctor, scientist, or programmer", "Business owner, banker, or financial analyst", "Writer, lawyer, social worker, or journalist"],
-    ["Conducting experiments or coding", "Managing budgets or analysing markets", "Writing stories, debating, or helping others"],
-    ["Analytical and logical thinker", "Strategic and financially minded", "Creative and empathetic communicator"],
-    ["How things work (physics, chemistry, biology, computers)", "How money and business work (economics, accounting)", "How society and people work (history, psychology, civics)"],
-    ["Climate change, robotics, or human anatomy", "Stock markets, startup culture, or economic policy", "Human rights, cultural heritage, or social media impact"],
-    ["Science fiction, popular science, technology blogs", "Business biographies, investment guides, finance news", "Literature, political commentary, psychology books"],
-    ["Discovering how the world works scientifically", "Understanding wealth creation and economic systems", "Understanding people, history, and social change"],
-    ["Science Olympiad, Robotics Club, Math Competition", "Business Club, Entrepreneurship Fair, Investment Challenge", "Debate Team, Drama Club, Community Service"],
-    ["Data, facts, and logical reasoning", "Cost-benefit analysis and strategic planning", "Values, ethics, and the impact on others"],
-    ["Faculty of Science / Engineering / Medicine / IT", "Faculty of Business / Economics / Finance / Commerce", "Faculty of Arts / Law / Social Science / Humanities"],
-    ["The one who always understands maths and science", "The one who talks about business ideas and money", "The one who loves debating, writing, and storytelling"],
-    ["Developing a vaccine, building a bridge, or creating an app", "Launching a startup, managing investments, or consulting", "Writing a novel, running an NGO, or working in politics"],
-    ["Mathematics and the natural sciences", "Accounting, economics, and business studies", "Languages, social sciences, and the arts"],
-    ["Build something, code, or run a science experiment", "Analyse stocks, read about startups, or make a budget plan", "Read fiction, visit a museum, or volunteer for a cause"],
-    ["Best Young Scientist / Best Tech Innovator", "Best Young Entrepreneur / Best Financial Analyst", "Best Young Author / Best Social Activist"],
-    ["Healthcare, technology, engineering, or research", "Banking, finance, e-commerce, or consulting", "Media, education, law, or public policy"],
-    ["Solve scientific problems and advance technology", "Create wealth, build businesses, and drive economic growth", "Influence society, protect rights, and shape culture"]
-  ];
+  y += 7;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(148, 163, 184);
+  doc.text(`Age: ${USER_INFO.age}  |  Gender: ${USER_INFO.gender}  |  Assessment Date: ${USER_INFO.timestamp}`, W / 2, y, { align: "center" });
 
-  for (let i = 1; i <= 20; i++) {
-    if (y > 265) { doc.addPage(); y = 20; }
-    const ansIdx = RESULT_DATA.answers[`Q${i}`];
-    const ansText = (OPTS[i-1] && ansIdx !== undefined) ? OPTS[i-1][ansIdx] : "—";
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(50, 50, 80);
-    doc.text(`Q${i}:`, 14, y);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(60, 60, 60);
-    const aLines = doc.splitTextToSize(ansText, W - 38);
-    doc.text(aLines, 26, y);
-    y += aLines.length * 5 + 3;
-  }
+  y += 11;
+  doc.setFont("times", "italic");
+  doc.setFontSize(11);
+  doc.setTextColor(203, 213, 225);
+  doc.text("has successfully completed the 20-Factor Clinical Sleep Disturbance Assessment.", W / 2, y, { align: "center" });
 
-  // ─ Footer ─
-  const pageCount = doc.getNumberOfPages();
-  for (let p = 1; p <= pageCount; p++) {
-    doc.setPage(p);
-    doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.text(`Career Predictor AI  •  Page ${p} of ${pageCount}`, W / 2, 290, { align: "center" });
-  }
+  // ─ Primary Result Box ─
+  y += 9;
+  doc.setFillColor(16, 26, 36);
+  doc.roundedRect(W / 2 - 85, y, 170, 24, 4, 4, "F");
+  doc.setLineWidth(0.8);
+  doc.setDrawColor(16, 185, 129);
+  doc.roundedRect(W / 2 - 85, y, 170, 24, 4, 4, "D");
 
-  doc.save(`Career_Prediction_${RESULT_DATA.career}_${Date.now()}.pdf`);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12.5);
+  doc.setTextColor(255, 255, 255);
+  doc.text(`Primary Sleep Pattern: ${RESULT_DATA.disorder.toUpperCase()}`, W / 2, y + 10, { align: "center" });
+
+  doc.setFontSize(9.5);
+  doc.setTextColor(52, 211, 153);
+  doc.text(`Clinical Pattern Match Confidence: ${RESULT_DATA.confidence}%`, W / 2, y + 18, { align: "center" });
+
+  y += 30;
+
+  // ─ Score Summary Pills ─
+  const sc = RESULT_DATA.scores;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(203, 213, 225);
+  doc.text(
+    `Insomnia Score: ${sc.Insomnia}/20   |   Sleep Apnea Score: ${sc["Sleep Apnea"]}/20   |   Hypersomnia Score: ${sc.Hypersomnia}/20`,
+    W / 2, y, { align: "center" }
+  );
+
+  // ─ Text-based Gold Emblem Seal Portion ─
+  y += 14;
+  doc.setFillColor(245, 158, 11);
+  doc.circle(W / 2, y, 11, "F");
+  
+  doc.setLineWidth(0.6);
+  doc.setDrawColor(255, 255, 255);
+  doc.circle(W / 2, y, 9.5, "D");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  doc.setTextColor(10, 15, 22);
+  doc.text("SLEEPAI", W / 2, y - 1, { align: "center" });
+  doc.text("VERIFIED", W / 2, y + 3, { align: "center" });
+
+  // Bottom Disclaimer note
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  doc.setFont("helvetica", "normal");
+  doc.text("SleepAI Digital Health Screening System • Non-Diagnostic Educational Assessment", W / 2, H - 15, { align: "center" });
+
+  // Save PDF Certificate
+  doc.save(`SleepAI_Official_Certificate_${USER_INFO.name.replace(/\s+/g, '_')}_${USER_INFO.certId}.pdf`);
 }

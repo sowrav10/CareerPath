@@ -1,7 +1,7 @@
 """
 utils/validator.py
 ===================
-Validates raw user input before passing to the model.
+Validates user demographic info and quiz answers before prediction.
 """
 
 import logging
@@ -14,7 +14,7 @@ TOTAL_QUESTIONS = 20
 
 def validate_answers(data: dict) -> tuple[bool, str]:
     """
-    Validate that the submitted answers are complete and valid.
+    Validate that user details and answers are complete and valid.
 
     Args:
         data (dict): Raw POST data from the frontend.
@@ -26,6 +26,23 @@ def validate_answers(data: dict) -> tuple[bool, str]:
     if not data:
         return False, "No data received."
 
+    # Validate User Information
+    name = str(data.get("user_name", "")).strip()
+    if not name:
+        return False, "Please enter your full name."
+
+    try:
+        age = int(data.get("age", 0))
+        if age < 1 or age > 120:
+            return False, "Please enter a valid age between 1 and 120."
+    except (TypeError, ValueError):
+        return False, "Invalid age format. Please enter a valid number."
+
+    gender = str(data.get("gender", "")).strip()
+    if not gender:
+        return False, "Please select your gender."
+
+    # Validate 20 assessment questions
     for i in range(1, TOTAL_QUESTIONS + 1):
         key = f"Q{i}"
         if key not in data:

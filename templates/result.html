@@ -4,10 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Result AI Career Prediction System</title>
+  <meta name="description"
+    content="Your official sleep disturbance analysis certificate and clinical evaluation report." />
+  <title>Official Sleep Analysis Certificate — SleepAI Health</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -24,19 +28,45 @@
   <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-brand">
-      <span class="nav-icon">🎓</span>
-      <span class="nav-title">CareerAI</span>
+      <img src="{{ url_for('static', filename='images/SleepAI LOGO.png') }}" class="nav-logo" alt="SleepAI Logo" />
+      <span class="nav-title">SleepAI Health</span>
     </div>
-    <div class="nav-badge">Powered by Random Forest ML</div>
+    <div class="nav-badge">Certified Analysis</div>
   </nav>
+
+  <!-- ═══════════════════════ PATIENT PROFILE BANNER ═══════════════════ -->
+  <section class="patient-banner-wrap">
+    <div class="glass-card patient-card animate-slide-up">
+      <div class="patient-info-meta">
+        <div class="patient-avatar">👤</div>
+        <div class="patient-details">
+          <span class="cert-id-tag">ID: {{ user_info.cert_id if user_info else 'CERT-SLP-OFFICIAL' }}</span>
+          <h2 class="patient-name">{{ user_info.user_name if user_info and user_info.user_name else 'Valued Patient' }}
+          </h2>
+          <div class="patient-pills">
+            <span class="p-pill">🎂 Age: <strong>{{ user_info.age if user_info and user_info.age else 'N/A'
+                }}</strong></span>
+            <span class="p-pill">👤 Gender: <strong>{{ user_info.gender if user_info and user_info.gender else 'N/A'
+                }}</strong></span>
+            <span class="p-pill">📅 Date: <strong>{{ timestamp }}</strong></span>
+          </div>
+        </div>
+      </div>
+      <div class="cert-badge-visual">
+        <img src="{{ url_for('static', filename='images/Seal Logo.png') }}" class="seal-badge-img"
+          alt="Official Seal Logo" />
+        <span class="seal-text">Official Seal Verified</span>
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════════════════════ RESULT HERO ══════════════════════════════ -->
   <section class="result-hero">
     <div class="result-hero-content animate-fade-in">
-      <div class="result-label">🎯 Your Career Stream</div>
+      <div class="result-label">🔍 Primary Sleep Pattern Classification</div>
       <h1 class="result-title">
         {{ result.info.emoji }}
-        <span class="result-career-name">{{ result.career }}</span>
+        <span class="result-career-name">{{ result.disorder }}</span>
       </h1>
       <p class="result-tagline">{{ result.info.tagline }}</p>
 
@@ -52,7 +82,7 @@
           </svg>
           <span class="conf-value">{{ result.confidence | round(1) }}%</span>
         </div>
-        <div class="conf-label">AI Confidence</div>
+        <div class="conf-label">Analysis Match</div>
       </div>
       {% endif %}
     </div>
@@ -61,18 +91,18 @@
   <!-- ═══════════════════════ PROBABILITY BARS ═════════════════════════ -->
   <section class="section-wrap">
     <div class="glass-card animate-slide-up">
-      <h3 class="card-heading">📊 Career Stream Match Analysis</h3>
+      <h3 class="card-heading">📊 Clinical Pattern Match Distribution</h3>
       <div class="prob-bars">
         {% for label, pct in result.probabilities.items() %}
         <div class="prob-row">
           <div class="prob-label">
-            {% if label == 'Science' %}🔬{% elif label == 'Commerce' %}📈{% else %}🎭{% endif %}
+            {% if label == 'Insomnia' %}🌙{% elif label == 'Sleep Apnea' %}😮‍💨{% else %}☀️{% endif %}
             {{ label }}
           </div>
           <div class="prob-track">
-            <div class="prob-fill {% if label == result.career %}prob-winner{% endif %}"
+            <div class="prob-fill {% if label == result.disorder %}prob-winner{% endif %}"
               style="width: {{ pct }}%;
-                      background: {% if label == 'Science' %}#4f8ef7{% elif label == 'Commerce' %}#f7c94f{% else %}#a64ff7{% endif %}">
+                      background: {% if label == 'Insomnia' %}#10b981{% elif label == 'Sleep Apnea' %}#f43f5e{% else %}#a855f7{% endif %}">
             </div>
           </div>
           <div class="prob-pct">{{ pct }}%</div>
@@ -82,26 +112,26 @@
 
       <!-- Score Breakdown -->
       <div class="score-grid">
-        <div class="score-item sci">
-          <div class="score-num">{{ result.scores.Science }}</div>
-          <div class="score-lbl">Science Score</div>
+        <div class="score-item ins">
+          <div class="score-num">{{ result.scores.Insomnia }}</div>
+          <div class="score-lbl">Insomnia Score</div>
         </div>
-        <div class="score-item com">
-          <div class="score-num">{{ result.scores.Commerce }}</div>
-          <div class="score-lbl">Commerce Score</div>
+        <div class="score-item apn">
+          <div class="score-num">{{ result.scores['Sleep Apnea'] }}</div>
+          <div class="score-lbl">Sleep Apnea Score</div>
         </div>
-        <div class="score-item hum">
-          <div class="score-num">{{ result.scores.Humanities }}</div>
-          <div class="score-lbl">Humanities Score</div>
+        <div class="score-item hyp">
+          <div class="score-num">{{ result.scores.Hypersomnia }}</div>
+          <div class="score-lbl">Hypersomnia Score</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════ CAREER DESCRIPTION ═══════════════════════ -->
+  <!-- ═══════════════════════ DISORDER DESCRIPTION ═════════════════════ -->
   <section class="section-wrap">
     <div class="glass-card animate-slide-up">
-      <h3 class="card-heading">💡 About Your Career Path</h3>
+      <h3 class="card-heading">💡 Clinical Profile Overview</h3>
       <p class="card-text">{{ result.info.description }}</p>
     </div>
   </section>
@@ -110,45 +140,45 @@
   <section class="section-wrap">
     <div class="info-grid">
 
-      <!-- Strengths -->
+      <!-- Symptoms -->
       <div class="glass-card info-card animate-slide-up">
-        <div class="info-icon">💪</div>
-        <h4 class="info-heading">Your Strengths</h4>
+        <div class="info-icon">🩺</div>
+        <h4 class="info-heading">Primary Symptoms</h4>
         <ul class="info-list">
-          {% for s in result.info.strengths %}
+          {% for s in result.info.symptoms %}
           <li>{{ s }}</li>
           {% endfor %}
         </ul>
       </div>
 
-      <!-- Skills -->
+      <!-- Risk Factors -->
       <div class="glass-card info-card animate-slide-up delay-1">
-        <div class="info-icon">🛠️</div>
-        <h4 class="info-heading">Recommended Skills</h4>
+        <div class="info-icon">⚠️</div>
+        <h4 class="info-heading">Risk Factors</h4>
         <ul class="info-list">
-          {% for s in result.info.skills %}
+          {% for s in result.info.risk_factors %}
           <li>{{ s }}</li>
           {% endfor %}
         </ul>
       </div>
 
-      <!-- Subjects -->
+      <!-- Lifestyle Tips -->
       <div class="glass-card info-card animate-slide-up delay-2">
-        <div class="info-icon">📚</div>
-        <h4 class="info-heading">University Subjects</h4>
+        <div class="info-icon">🛌</div>
+        <h4 class="info-heading">Lifestyle Recommendations</h4>
         <ul class="info-list">
-          {% for s in result.info.subjects %}
+          {% for s in result.info.lifestyle_tips %}
           <li>{{ s }}</li>
           {% endfor %}
         </ul>
       </div>
 
-      <!-- Careers -->
+      <!-- When to See a Doctor -->
       <div class="glass-card info-card animate-slide-up delay-3">
-        <div class="info-icon">💼</div>
-        <h4 class="info-heading">Job Opportunities</h4>
+        <div class="info-icon">👨‍⚕️</div>
+        <h4 class="info-heading">Clinical Next Steps</h4>
         <ul class="info-list">
-          {% for s in result.info.careers %}
+          {% for s in result.info.when_to_see_doctor %}
           <li>{{ s }}</li>
           {% endfor %}
         </ul>
@@ -157,57 +187,60 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════ GROWTH AREAS ════════════════════════════ -->
+  <!-- ═══════════════════════ DISCLAIMER ══════════════════════════════ -->
   <section class="section-wrap">
-    <div class="glass-card animate-slide-up">
-      <h3 class="card-heading">🚀 Future Growth Areas</h3>
-      <div class="growth-chips">
-        {% for g in result.info.growth %}
-        <div class="growth-chip">{{ g }}</div>
-        {% endfor %}
-      </div>
+    <div class="disclaimer-card animate-fade-in">
+      <div class="disclaimer-icon">⚕️</div>
+      <p class="disclaimer-text">
+        <strong>Medical Disclaimer:</strong> This digital screening report and certificate are intended for
+        <strong>informational and educational purposes only</strong> and do not constitute a formal clinical diagnosis.
+        Please present this report to a <strong>qualified sleep specialist or healthcare professional</strong> for
+        thorough medical evaluation.
+      </p>
     </div>
   </section>
 
-  <!-- ═══════════════════════ MOTIVATIONAL QUOTE ══════════════════════ -->
-  <section class="section-wrap">
-    <div class="quote-card animate-fade-in">
-      <div class="quote-icon">❝</div>
-      <p class="quote-text">{{ result.info.quote }}</p>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════ ACTION BUTTONS ══════════════════════════ -->
+  <!-- ═══════════════════════ ACTION BUTTONS & CERTIFICATE DOWNLOAD ════ -->
   <section class="section-wrap actions-section">
-    <a href="/" class="btn-secondary btn-large">🔄 Predict Again</a>
-    <button class="btn-primary btn-large" onclick="downloadPDF()">
-      📥 Download PDF
+    <button class="btn-primary btn-large btn-cert" onclick="downloadCertificatePDF()">
+      🏆 Download Certificate (PDF)
     </button>
+    <a href="/" class="btn-secondary btn-large">🔄 Retake Assessment</a>
     <button class="btn-outline btn-large" onclick="window.print()">
-      🖨️ Print Result
+      🖨️ Print Report
     </button>
   </section>
 
-  <!-- Hidden data for JS PDF generation -->
+  <!-- Hidden data and images for JS Certificate & PDF generation -->
+  <img id="pdfSleepAiLogo" src="{{ url_for('static', filename='images/SleepAI LOGO.png') }}" style="display:none;" />
+  <img id="pdfSealLogo" src="{{ url_for('static', filename='images/Seal Logo.png') }}" style="display:none;" />
   <script>
+    const USER_INFO = {
+      name: "{{ user_info.user_name if user_info and user_info.user_name else 'Valued Patient' }}",
+      age: "{{ user_info.age if user_info and user_info.age else 'N/A' }}",
+      gender: "{{ user_info.gender if user_info and user_info.gender else 'N/A' }}",
+      certId: "{{ user_info.cert_id if user_info and user_info.cert_id else 'CERT-SLP-OFFICIAL' }}",
+      timestamp: "{{ timestamp }}"
+    };
+
     const RESULT_DATA = {
-      career: "{{ result.career }}",
+      disorder: "{{ result.disorder }}",
+      career: "{{ result.disorder }}",
       confidence: "{{ result.confidence | round(1) if result.confidence else 'N/A' }}",
       tagline: {{ result.info.tagline | tojson }},
-    description: { { result.info.description | tojson } },
-    scores: {
-      Science: { { result.scores.Science } },
-      Commerce: { { result.scores.Commerce } },
-      Humanities: { { result.scores.Humanities } }
-    },
-    strengths: { { result.info.strengths | tojson } },
-    skills: { { result.info.skills | tojson } },
-    subjects: { { result.info.subjects | tojson } },
-    careers: { { result.info.careers | tojson } },
-    growth: { { result.info.growth | tojson } },
-    quote: { { result.info.quote | tojson } },
-    timestamp: "{{ timestamp }}",
-      answers: { { answers | tojson } }
+      description: {{ result.info.description | tojson }},
+      scores: {
+        Insomnia: {{ result.scores.Insomnia }},
+        "Sleep Apnea": {{ result.scores['Sleep Apnea'] }},
+        Hypersomnia: {{ result.scores.Hypersomnia }}
+      },
+      symptoms: {{ result.info.symptoms | tojson }},
+      risk_factors: {{ result.info.risk_factors | tojson }},
+      lifestyle_tips: {{ result.info.lifestyle_tips | tojson }},
+      when_to_see_doctor: {{ result.info.when_to_see_doctor | tojson }},
+      quote: {{ result.info.quote | tojson }},
+      timestamp: "{{ timestamp }}",
+      answers: {{ answers | tojson }}
     };
   </script>
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>

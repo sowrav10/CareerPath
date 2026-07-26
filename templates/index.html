@@ -4,10 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI CareerPath Prediction System</title>
+  <meta name="description"
+    content="AI-powered sleep disturbance screening tool. Answer 20 questions to receive your clinical-grade sleep analysis certificate." />
+  <title>Sleep Disturbance Analyzer — AI Sleep Assessment</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
 </head>
 
@@ -21,45 +25,92 @@
     <div class="particles" id="particles"></div>
   </div>
 
-
   <nav class="navbar">
     <div class="nav-brand">
-      <span class="nav-icon">🎓</span>
-      <span class="nav-title">CareerAI</span>
+      <img src="{{ url_for('static', filename='images/SleepAI LOGO.png') }}" class="nav-logo" alt="SleepAI Logo" />
+      <span class="nav-title">SleepAI Health</span>
     </div>
-    <div class="nav-badge">Powered by Team B4</div>
+    <div class="nav-badge">Certified Medical Screening</div>
   </nav>
 
   <!-- ═══════════════════════ HERO SECTION ═════════════════════════════ -->
   <section class="hero" id="hero">
     <div class="hero-content">
-      <div class="hero-badge animate-fade-in">AI-Powered Career Guidance</div>
+      <div class="hero-badge animate-fade-in">🩺 AI Clinical Sleep Screening</div>
       <h1 class="hero-title animate-slide-up">
-        AI Career<br /><span class="gradient-text">Prediction System</span>
+        Sleep Disturbance<br /><span class="gradient-text">Analyzer</span>
       </h1>
       <p class="hero-subtitle animate-fade-in-delay">
-        Discover your most suitable academic and career pathway<br />
-        using Artificial Intelligence and Machine Learning.
+        Identify your sleep disturbance pattern using AI.<br />
+        Receive personalized health analysis and a downloadable digital screening certificate.
       </p>
       <div class="hero-stats animate-fade-in-delay2">
-        <div class="stat-pill">🎯 3 Career Streams</div>
-        <div class="stat-pill">📊 20 Smart Questions</div>
-        <div class="stat-pill">⚡ Instant Results</div>
+        <div class="stat-pill">✨ 3 Disorder Patterns</div>
+        <div class="stat-pill">📋 20 Clinical Questions</div>
+        <div class="stat-pill">📜 Official Certificate</div>
       </div>
-      <button class="btn-primary animate-fade-in-delay2" id="startBtn" onclick="startPrediction()">
+      <button class="btn-primary animate-fade-in-delay2" id="startBtn" onclick="showUserInfoStep()">
         <span class="btn-icon">🚀</span>
-        Start Prediction
+        Start Free Assessment
         <span class="btn-arrow">→</span>
       </button>
     </div>
     <div class="hero-visual animate-float">
       <div class="brain-card">
-        <div class="brain-emoji">🧬</div>
+        <img src="{{ url_for('static', filename='images/SleepAI LOGO.png') }}" class="hero-card-logo"
+          alt="SleepAI Logo" />
         <div class="brain-lines">
           <div class="brain-line"></div>
           <div class="brain-line"></div>
           <div class="brain-line short"></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ USER INFO STEP ═══════════════════════════ -->
+  <section class="user-info-section hidden" id="userInfoSection">
+    <div class="quiz-container">
+      <div class="glass-card user-form-card">
+        <div class="form-header">
+          <span class="form-badge">Step 1 of 2</span>
+          <h2 class="form-title">Patient Profile Information</h2>
+          <p class="form-subtitle">Please enter your demographic details for accurate clinical analysis and certificate
+            generation.</p>
+        </div>
+
+        <form id="patientForm" onsubmit="submitPatientInfo(event)">
+          <div class="input-group">
+            <label for="userName">Full Name <span class="req">*</span></label>
+            <input type="text" id="userName" placeholder="e.g. Sowrav Dey" required />
+          </div>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label for="userAge">Age <span class="req">*</span></label>
+              <input type="number" id="userAge" min="1" max="120" placeholder="e.g. 16" required />
+            </div>
+
+            <div class="input-group">
+              <label for="userGender">Gender <span class="req">*</span></label>
+              <select id="userGender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="user-form-nav">
+            <button type="button" class="btn-secondary" onclick="backToHero()">
+              ← Back
+            </button>
+            <button type="submit" class="btn-primary">
+              Begin 20 Questions →
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </section>
@@ -107,8 +158,8 @@
   <div class="loading-overlay hidden" id="loadingOverlay">
     <div class="loading-card">
       <div class="loader-ring"></div>
-      <div class="loading-text">Analysing your answers…</div>
-      <div class="loading-sub">Our AI is computing your ideal career path</div>
+      <div class="loading-text">Analysing your sleep patterns…</div>
+      <div class="loading-sub">Generating clinical assessment and certificate profile</div>
       <div class="loading-dots">
         <span></span><span></span><span></span>
       </div>
