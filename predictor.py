@@ -165,6 +165,46 @@ DISORDER_INFO = {
             "— E. Joseph Cossman"
         ),
     },
+    "Healthy / Normal Sleep Pattern": {
+        "emoji": "🌿",
+        "color": "#0ea5e9",
+        "tagline": "Optimal sleep health — balanced, restorative, and consistent.",
+        "description": (
+            "Your responses indicate a healthy and well-regulated sleep-wake cycle with no "
+            "significant or clinical-grade signs of Insomnia, Sleep Apnea, or Hypersomnia. "
+            "Your overall sleep quality is optimal, providing steady daytime energy, focus, "
+            "and restorative rest."
+        ),
+        "symptoms": [
+            "Ability to fall asleep within 15–30 minutes",
+            "Uninterrupted nighttime sleep with minimal awakenings",
+            "Waking up feeling refreshed and energized",
+            "Stable daytime alertness without heavy caffeine reliance",
+            "Regular sleep-wake schedule aligned with your daily routine",
+            "Good overall sleep hygiene practices",
+        ],
+        "risk_factors": [
+            "Occasional stress or travel disruption (normal variations)",
+            "Temporary late nights or workload changes",
+            "Minor environmental changes (noise, light)",
+        ],
+        "lifestyle_tips": [
+            "Maintain your current consistent sleep and wake schedule",
+            "Continue engaging in regular physical activity",
+            "Keep your bedroom cool, dark, and quiet",
+            "Stay hydrated and maintain balanced nutrition",
+            "Practice mindfulness or light stretching to preserve sleep quality",
+        ],
+        "when_to_see_doctor": [
+            "If you experience sudden onset of severe daytime exhaustion or snoring",
+            "If lifestyle disruptions cause prolonged sleep difficulties exceeding 2–3 weeks",
+            "For routine annual medical checkups and preventive health advice",
+        ],
+        "quote": (
+            "\"A good laugh and a long sleep are the two best cures for anything.\" "
+            "— Irish Proverb"
+        ),
+    },
 }
 
 
@@ -180,8 +220,10 @@ def predict_disorder(raw_answers: dict) -> dict:
       - Score_Insomnia   = count of answers == 0  (range 0–20)
       - Score_Apnea      = count of answers == 1  (range 0–20)
       - Score_Hypersomnia= count of answers == 2  (range 0–20)
-      - Predicted disorder = highest scoring class
-      - Probabilities computed as percentage of each score vs total
+      - If max(Score) <= 7:
+          User is classified as 'Healthy / Normal Sleep Pattern'
+      - Otherwise:
+          Predicted disorder = highest scoring class
 
     Args:
         raw_answers (dict): {Q1: int, Q2: int, ..., Q20: int}
@@ -218,16 +260,30 @@ def predict_disorder(raw_answers: dict) -> dict:
     class_names = ["Insomnia", "Sleep Apnea", "Hypersomnia"]
     score_list = [score_insomnia, score_apnea, score_hypersomnia]
     max_score = max(score_list)
-    class_int = score_list.index(max_score)
-    disorder = class_names[class_int]
 
-    # Compute probabilities
-    probabilities = {
-        "Insomnia":    round(score_insomnia    / total * 100, 1),
-        "Sleep Apnea": round(score_apnea       / total * 100, 1),
-        "Hypersomnia": round(score_hypersomnia / total * 100, 1),
-    }
-    confidence = probabilities[disorder]
+    # Threshold rule for Healthy / Normal condition:
+    # If no single disorder score exceeds 7 out of 20, the patient is healthy.
+    HEALTHY_THRESHOLD = 7
+
+    if max_score <= HEALTHY_THRESHOLD:
+        disorder = "Healthy / Normal Sleep Pattern"
+        class_int = 3
+        confidence = round((20 - max_score) / 20 * 100, 1)
+        probabilities = {
+            "Healthy / Normal": confidence,
+            "Insomnia":    round(score_insomnia    / total * 100, 1),
+            "Sleep Apnea": round(score_apnea       / total * 100, 1),
+            "Hypersomnia": round(score_hypersomnia / total * 100, 1),
+        }
+    else:
+        class_int = score_list.index(max_score)
+        disorder = class_names[class_int]
+        probabilities = {
+            "Insomnia":    round(score_insomnia    / total * 100, 1),
+            "Sleep Apnea": round(score_apnea       / total * 100, 1),
+            "Hypersomnia": round(score_hypersomnia / total * 100, 1),
+        }
+        confidence = probabilities[disorder]
 
     logger.info(f"Prediction → {disorder} (confidence: {confidence}%)")
     logger.debug(f"Scores → {scores}")
